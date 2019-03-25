@@ -2,6 +2,7 @@ package fr.mrcraftcod.tp;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import fr.mrcraftcod.tp.model.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -9,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class Main{
@@ -26,12 +28,12 @@ public class Main{
 			System.exit(1);
 		}
 		
-		for(File f : new File("randomized_torename_GXL").listFiles()){
-			LOGGER.info("{}: {}", f, GXLParser.fromFile(Paths.get(f.toURI())));
-		}
+		final var graphs = new ArrayList<Graph>();
 		for(File f : new File("torename_GXL").listFiles()){
-			LOGGER.info("{}: {}", f, GXLParser.fromFile(Paths.get(f.toURI())));
+			graphs.addAll(GXLParser.fromFile(Paths.get(f.toURI())).getGraphs());
 		}
+		
+		
 	}
 	
 	public static String getProgramVersion(){

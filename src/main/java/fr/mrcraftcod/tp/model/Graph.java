@@ -81,13 +81,15 @@ public class Graph{
 
 		for(int i = 0; i < this.getEdgeCount() + 1; i++){
 			for(int j = 0; j < graph.getEdgeCount() + 1; j++){
-				final var cost = 0D;
+				var cost = 0D;
 
 				if(!Objects.equals(i, this.getEdgeCount()) || !Objects.equals(j, graph.getEdgeCount())){
 					if(Objects.equals(i, this.getEdgeCount()) || Objects.equals(j, graph.getEdgeCount())){
 						cost = (1 - alpha) * edgeCost;
 					}
 				}
+				
+				matrix.put(i, j, cost);
 			}
 		}
 		
@@ -117,6 +119,31 @@ public class Graph{
 				matrix.put(i, j, cost);
 			}
 		}
+		
+		return matrix;
+	}
+	
+	public Matrix2D getBipartiteCostMatrix(final Graph graph){
+		final var matrix = new Matrix2D(this.getNodeCount() + graph.getNodeCount(), this.getNodeCount() + graph.getNodeCount());
+		final var nodeCosts = this.getNodeCostMatrix(graph);
+		
+		for(int i = 0; i < this.getNodeCount(); i++){
+			for(int j = 0; j < graph.getNodeCount(); j++){
+				final var theta = 0D;
+				nodeCosts.put(i, j, nodeCosts.get(i, j) + theta);
+			}
+		}
+		
+		for(int i = 0; i < this.getNodeCount(); i++){
+			final var theta = 0D;
+			nodeCosts.put(i, graph.getNodeCount() + i, nodeCosts.get(i, this.getNodeCount()) + theta);
+		}
+		
+		for(int j = 0; j < graph.getNodeCount(); j++){
+			final var theta = 0D;
+			nodeCosts.put(this.getNodeCount() + j, j, nodeCosts.get(this.getNodeCount(), j) + theta);
+		}
+		
 		
 		return matrix;
 	}

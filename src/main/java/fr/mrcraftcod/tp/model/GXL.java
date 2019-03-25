@@ -25,4 +25,8 @@ public class GXL{
 	public String toString(){
 		return new ToStringBuilder(this).append("graphs", graphs).toString();
 	}
+	
+	public Collection<Graph> getGraphs(){
+		return this.graphs;
+	}
 }

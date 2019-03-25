@@ -27,6 +27,16 @@ public class Matrix2D{
 		this.data[i][j] = cost;
 	}
 	
+	public double get(int i, int j){
+		if(i < 0 || i >= this.getS1()){
+			throw new IndexOutOfBoundsException();
+		}
+		if(j < 0 || j >= this.getS2()){
+			throw new IndexOutOfBoundsException();
+		}
+		return this.data[i][j];
+	}
+	
 	public int getS1(){
 		return s1;
 	}
