@@ -1,12 +1,15 @@
 package fr.mrcraftcod.tp.model;
 
+import fr.mrcraftcod.tp.HungarianAlgorithm;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import static fr.mrcraftcod.tp.model.EdgeMode.UNDIRECTED;
 
 /**
@@ -171,7 +174,19 @@ public class Graph{
 	}
 	
 	private double getTheta(Graph graph, Matrix2D edgeCosts, int i, int j){
-		return 0;
+		Collection<Edge> g1g2 = this.getEdgesAt(i);
+		Collection<Edge> g2g1 = graph.getEdgesAt(j);
+		
+		final var size = Math.max(g1g2.size(), g2g1.size());
+		final var matrix = new Matrix2D(size, size);
+		//Matrix of them
+		//HG
+		return HungarianAlgorithm.hgAlgorithm(matrix.getAsArray(), "min").getLeft();
+	}
+	
+	private Collection<Edge> getEdgesAt(int i){
+		final var node = this.getNodeAt(i).orElseThrow();
+		return this.getEdges().stream().filter(e -> Objects.equals(e.getFrom(), node.getID()) || Objects.equals(e.getTo(), node.getID())).collect(Collectors.toList());
 	}
 	
 	private int getNodeCount(){
