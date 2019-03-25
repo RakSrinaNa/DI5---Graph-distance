@@ -37,6 +37,10 @@ public class Main{
 			for(var g2 : graphs){
 				if(!Objects.equals(g1, g2)){
 					final var bipartite = g1.getBipartiteCostMatrix(g2);
+					for(var l : bipartite.getAsArray()){
+						System.out.println(Arrays.toString(l));
+					}
+					
 					final var result = HungarianAlgorithm.hgAlgorithm(bipartite.getAsArray(), "min");
 					for(var l : result.getRight()){
 						System.out.println(Arrays.toString(l));

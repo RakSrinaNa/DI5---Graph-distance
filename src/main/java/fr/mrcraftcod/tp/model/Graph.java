@@ -152,7 +152,7 @@ public class Graph{
 		
 		for(int i = 0; i < this.getNodeCount(); i++){
 			for(int j = 0; j < graph.getNodeCount(); j++){
-				matrix.put(i, j, Double.MAX_VALUE);
+				matrix.put(i, graph.getNodeCount() + j, Double.MAX_VALUE);
 			}
 			final var theta = 0D; //TODO
 			matrix.put(i, graph.getNodeCount() + i, nodeCosts.get(i, graph.getNodeCount()) + theta);
@@ -160,7 +160,7 @@ public class Graph{
 		
 		for(int j = 0; j < graph.getNodeCount(); j++){
 			for(int i = 0; i < this.getNodeCount(); i++){
-				matrix.put(i, j, Double.MAX_VALUE);
+				matrix.put(this.getNodeCount() + i, j, Double.MAX_VALUE);
 			}
 			final var theta = 0D; //TODO
 			matrix.put(this.getNodeCount() + j, j, nodeCosts.get(this.getNodeCount(), j) + theta);
