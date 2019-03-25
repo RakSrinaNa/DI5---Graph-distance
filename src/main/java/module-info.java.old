@@ -1,0 +1,41 @@
+/**
+ * Created by Thomas Couchoud (MrCraftCod - zerderr@gmail.com) on 2019-01-09.
+ *
+ * @author Thomas Couchoud
+ * @since 2019-01-09
+ */
+open module fr.mrcraftcod.simulator {
+	requires org.jetbrains.annotations;
+	
+	requires org.slf4j;
+	//noinspection Java9RedundantRequiresStatement
+	requires org.apache.logging.log4j;
+	requires java.scripting;
+	
+	requires org.apache.commons.lang3;
+	requires org.json;
+	requires ortools;
+	requires jcommander;
+	
+	requires javafx.graphics;
+	requires javafx.controls;
+	requires javafx.swing;
+	
+	exports fr.mrcraftcod.tp;
+	exports fr.mrcraftcod.tp.capacity;
+	exports fr.mrcraftcod.tp.chargers;
+	exports fr.mrcraftcod.tp.exceptions;
+	exports fr.mrcraftcod.tp.jfx;
+	exports fr.mrcraftcod.tp.jfx.tabs;
+	exports fr.mrcraftcod.tp.jfx.tabs.sensor;
+	exports fr.mrcraftcod.tp.jfx.utils;
+	exports fr.mrcraftcod.tp.metrics;
+	exports fr.mrcraftcod.tp.metrics.events;
+	exports fr.mrcraftcod.tp.metrics.listeners;
+	exports fr.mrcraftcod.tp.positions;
+	exports fr.mrcraftcod.tp.routing;
+	exports fr.mrcraftcod.tp.sensors;
+	exports fr.mrcraftcod.tp.simulation;
+	exports fr.mrcraftcod.tp.simulation.events;
+	exports fr.mrcraftcod.tp.utils;
+}
