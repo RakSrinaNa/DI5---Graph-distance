@@ -146,7 +146,7 @@ public class Graph{
 		for(int i = 0; i < this.getNodeCount(); i++){
 			for(int j = 0; j < graph.getNodeCount(); j++){
 				final var theta = 0D; //TODO
-				nodeCosts.put(i, j, nodeCosts.get(i, j) + theta);
+				matrix.put(i, j, nodeCosts.get(i, j) + theta);
 			}
 		}
 		
