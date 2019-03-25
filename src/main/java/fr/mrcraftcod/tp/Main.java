@@ -28,7 +28,7 @@ public class Main{
 		}
 		
 		final var graphs = new ArrayList<Graph>();
-		for(File f : new File("torename_GXL").listFiles()){
+		for(File f : Objects.requireNonNull(new File("torename_GXL").listFiles())){
 			graphs.addAll(GXLParser.fromFile(Paths.get(f.toURI())).getGraphs());
 		}
 		graphs.sort(Comparator.comparing(Graph::getSourcePath));
@@ -37,16 +37,8 @@ public class Main{
 			for(var g2 : graphs){
 				if(!Objects.equals(g1, g2)){
 					final var bipartite = g1.getBipartiteCostMatrix(g2);
-					for(var l : bipartite.getAsArray()){
-						System.out.println(Arrays.toString(l));
-					}
-					
 					final var result = HungarianAlgorithm.hgAlgorithm(bipartite.getAsArray(), "min");
-					for(var l : result.getRight()){
-						System.out.println(Arrays.toString(l));
-					}
 					LOGGER.info("{}~{} vs {}~{} ==> Distance: {}", g1.getSourcePath().getFileName(), g1.getID(), g2.getSourcePath().getFileName(), g2.getID(), result.getLeft());
-					System.exit(0);
 				}
 			}
 		}
