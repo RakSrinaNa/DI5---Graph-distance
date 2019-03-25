@@ -37,8 +37,11 @@ public class Main{
 			for(var g2 : graphs){
 				if(!Objects.equals(g1, g2)){
 					final var bipartite = g1.getBipartiteCostMatrix(g2);
-					final var distance = HungarianAlgorithm.hgAlgorithm(bipartite.getAsArray(), "max");
-					LOGGER.info("{}~{} vs {}~{} ==> Distance: {}", g1.getSourcePath().getFileName(), g1.getID(), g2.getSourcePath().getFileName(), g2.getID(), distance);
+					final var result = HungarianAlgorithm.hgAlgorithm(bipartite.getAsArray(), "min");
+					for(var l : result.getRight()){
+						System.out.println(Arrays.toString(l));
+					}
+					LOGGER.info("{}~{} vs {}~{} ==> Distance: {}", g1.getSourcePath().getFileName(), g1.getID(), g2.getSourcePath().getFileName(), g2.getID(), result.getLeft());
 					System.exit(0);
 				}
 			}

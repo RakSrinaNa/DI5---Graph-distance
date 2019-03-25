@@ -38,6 +38,8 @@ package fr.mrcraftcod.tp;
  *
  */
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Random;
@@ -144,7 +146,7 @@ public class HungarianAlgorithm{
 	//**********************************//
 	
 	//public static int[][] hgAlgorithm (double[][] array, String sumType)
-	public static double hgAlgorithm(double[][] array, String sumType){
+	public static Pair<Double, int[][]> hgAlgorithm(double[][] array, String sumType){
 		double[][] cost = copyOf(array); //Create the cost matrix
 		
 		if(sumType.equalsIgnoreCase("max")) //Then array is weight array. Must change to cost.
@@ -221,7 +223,7 @@ public class HungarianAlgorithm{
 		for(int[] ints : assignment){
 			sum = sum + array[ints[0]][ints[1]];
 		}
-		return sum;
+		return ImmutablePair.of(sum, assignment);
 	}
 	
 	public static int hg_step1(int step, double[][] cost){
@@ -497,7 +499,7 @@ public class HungarianAlgorithm{
 	//*****************//
 	public static double JCEAssignment(double[][] array){
 		//double MinSum = hgAlgorithm(array, "max"); //Call Hungarian algorithm, with minimum cost
-		return hgAlgorithm(array, "min");
+		return hgAlgorithm(array, "min").getLeft();
 	}
 	
 	//***********//
