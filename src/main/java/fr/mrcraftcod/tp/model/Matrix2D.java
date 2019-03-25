@@ -37,6 +37,10 @@ public class Matrix2D{
 		return this.data[i][j];
 	}
 	
+	public double[][] getAsArray(){
+		return this.data;
+	}
+	
 	public int getS1(){
 		return s1;
 	}

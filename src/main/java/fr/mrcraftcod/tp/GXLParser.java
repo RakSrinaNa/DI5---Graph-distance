@@ -32,6 +32,7 @@ public class GXLParser{
 		
 		final var gxl = new GXL();
 		gxl.addAllGraphs(parseGraphs(gxlRoot.getElementsByTagName("graph")));
+		gxl.getGraphs().forEach(g -> g.setSourcePath(path));
 		return gxl;
 	}
 	
