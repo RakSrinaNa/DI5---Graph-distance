@@ -58,15 +58,15 @@ public class Graph{
 	public double addEdgeEditionCost(Pair<Double, int[][]> result, Graph graph, Matrix2D edgeCosts){
 		var realScore = result.getLeft();
 		for(final var edge : this.getEdges()){
-			var index11 = this.getNodeIndex(edge.getFrom()).orElseThrow();
-			var index12 = this.getNodeIndex(edge.getTo()).orElseThrow();
+			final var index11 = this.getNodeIndex(edge.getFrom()).orElseThrow();
+			final var index12 = this.getNodeIndex(edge.getTo()).orElseThrow();
 			
-			var assign1 = result.getRight()[index11];
-			var assign2 = result.getRight()[index12];
+			final var assign1 = result.getRight()[index11];
+			final var assign2 = result.getRight()[index12];
 			
 			if(assign1[1] < graph.getNodeCount() && assign2[1] < graph.getNodeCount()){
-				var node21 = graph.getNodeAt(assign1[1]).orElseThrow();
-				var node22 = graph.getNodeAt(assign2[1]).orElseThrow();
+				final var node21 = graph.getNodeAt(assign1[1]).orElseThrow();
+				final var node22 = graph.getNodeAt(assign2[1]).orElseThrow();
 				
 				final var otherEdge = graph.getEdge(node21, node22);
 				if(otherEdge.isPresent()){
@@ -78,22 +78,24 @@ public class Graph{
 			}
 		}
 		for(final var edge : graph.getEdges()){
-			var index21 = graph.getNodeIndex(edge.getFrom()).orElseThrow();
-			var index22 = graph.getNodeIndex(edge.getTo()).orElseThrow();
+			final var index21 = graph.getNodeIndex(edge.getFrom()).orElseThrow();
+			final var index22 = graph.getNodeIndex(edge.getTo()).orElseThrow();
 			
-			var assign1 = Stream.of(result.getRight()).filter(a -> a[1] == index21).findAny();
-			var assign2 = Stream.of(result.getRight()).filter(a -> a[1] == index22).findAny();
+			final var assign1 = Stream.of(result.getRight()).filter(a -> a[1] == index21).findAny();
+			final var assign2 = Stream.of(result.getRight()).filter(a -> a[1] == index22).findAny();
+			
+			final var edgeIndex = graph.getEdgeIndex(edge).orElseThrow();
 			
 			if(assign1.isPresent() && assign2.isPresent() && assign1.get()[1] < this.getNodeCount() && assign2.get()[1] < this.getNodeCount()){
-				var node11 = this.getNodeAt(assign1.get()[1]).orElseThrow();
-				var node12 = this.getNodeAt(assign2.get()[1]).orElseThrow();
+				final var node11 = this.getNodeAt(assign1.get()[1]).orElseThrow();
+				final var node12 = this.getNodeAt(assign2.get()[1]).orElseThrow();
 				
 				if(graph.getEdge(node11, node12).isEmpty()){
-					realScore += SCORE_EDGE_CREATED;
+					realScore += edgeCosts.get(this.getEdgeCount(), edgeIndex);
 				}
 			}
 			else{
-				realScore += SCORE_EDGE_CREATED;
+				realScore += edgeCosts.get(this.getEdgeCount(), edgeIndex);
 			}
 		}
 		return realScore;
