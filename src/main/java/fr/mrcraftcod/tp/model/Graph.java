@@ -23,6 +23,7 @@ import static fr.mrcraftcod.tp.model.EdgeMode.UNDIRECTED;
 public class Graph{
 	private static final Double SCORE_EDGE_MAPPED = 0D;
 	private static final Double SCORE_EDGE_DELETED = 0D;
+	private static final Double SCORE_EDGE_CREATED = 0D;
 	private final int ID;
 	private final ArrayList<Node> nodes;
 	private final ArrayList<Edge> edges;
@@ -71,6 +72,23 @@ public class Graph{
 				}
 				else{
 					realScore += SCORE_EDGE_DELETED;
+				}
+			}
+		}
+		for(final var edge : graph.getEdges()){
+			var index21 = graph.getNodeIndex(edge.getFrom()).orElseThrow();
+			var index22 = graph.getNodeIndex(edge.getTo()).orElseThrow();
+			
+			//TODO
+			var assign1 = result.getRight()[index21];
+			var assign2 = result.getRight()[index22];
+			
+			if(assign1[1] < this.getNodeCount() && assign2[1] < this.getNodeCount()){
+				var node11 = this.getNodeAt(assign1[1]).orElseThrow();
+				var node12 = this.getNodeAt(assign2[1]).orElseThrow();
+				
+				if(graph.getEdge(node11, node12).isEmpty()){
+					realScore += SCORE_EDGE_CREATED;
 				}
 			}
 		}
