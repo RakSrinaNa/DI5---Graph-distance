@@ -44,15 +44,13 @@ public class Main{
 		final var sc = new Scanner(System.in);
 		for(var g11 : graphs){
 			for(var g12 : graphs){
-				if(!Objects.equals(g11, g12)){
-					final var I1 = processGraphs(g11, g12, "Normal " + g11.getSourcePath().getFileName() + " - " + g12.getSourcePath().getFileName());
-					final var g21 = GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g11.getSourcePath().getFileName().toString())).getGraphs().iterator().next();
-					final var g22 = GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g12.getSourcePath().getFileName().toString())).getGraphs().iterator().next();
-					final var I2 = processGraphs(g21, g22, "Randomized " + g21.getSourcePath().getFileName() + " - " + g22.getSourcePath().getFileName());
-					sc.nextLine();
-					I1.close();
-					I2.close();
-				}
+				final var I1 = processGraphs(g11, g12, "Normal " + g11.getSourcePath().getFileName() + " - " + g12.getSourcePath().getFileName());
+				final var g21 = GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g11.getSourcePath().getFileName().toString())).getGraphs().iterator().next();
+				final var g22 = GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g12.getSourcePath().getFileName().toString())).getGraphs().iterator().next();
+				final var I2 = processGraphs(g21, g22, "Randomized " + g21.getSourcePath().getFileName() + " - " + g22.getSourcePath().getFileName());
+				sc.nextLine();
+				I1.close();
+				I2.close();
 			}
 		}
 	}
