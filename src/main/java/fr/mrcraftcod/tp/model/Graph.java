@@ -1,15 +1,17 @@
 package fr.mrcraftcod.tp.model;
 
-import fr.mrcraftcod.tp.HungarianAlgorithm;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import static fr.mrcraftcod.tp.model.EdgeMode.UNDIRECTED;
 
 /**
@@ -47,6 +49,26 @@ public class Graph{
 	
 	public Optional<Node> getNodeByID(int id){
 		return this.getNodes().stream().filter(n -> Objects.equals(n.getID(), id)).findAny();
+	}
+	
+	public void addEdgeEditionCost(Pair<Double, int[][]> result, Graph graph){
+		for(final var edge : this.getEdges()){
+			var index1 = this.getNodeIndex(edge.getFrom()).orElseThrow();
+			var index2 = this.getNodeIndex(edge.getTo()).orElseThrow();
+			
+			if(result.getRight()[index1][index2] == 1){
+			
+			}
+		}
+	}
+	
+	private Optional<Integer> getNodeIndex(int id){
+		return IntStream.range(0, this.getNodeCount()).mapToObj(i -> ImmutablePair.of(i, this.getNodeAt(i))).filter(n -> n.getRight().isPresent()).filter(n -> Objects.equals(n.getRight().get().getID(), id)).map(ImmutablePair::getLeft).findAny();
+	}
+	
+	public String getInstanceName(){
+		final var fileName = this.getSourcePath().getFileName().toString();
+		return fileName.substring(0, fileName.lastIndexOf("."));
 	}
 	
 	public int getID(){
@@ -174,17 +196,17 @@ public class Graph{
 	}
 	
 	private double getTheta(Graph graph, Matrix2D edgeCosts, int i, int j){
-		Collection<Edge> g1g2 = this.getEdgesAt(i);
-		Collection<Edge> g2g1 = graph.getEdgesAt(j);
+		//List<Edge> g1g2 = this.getEdgesAt(i);
+		//List<Edge> g2g1 = graph.getEdgesAt(j);
 		
-		final var size = Math.max(g1g2.size(), g2g1.size());
-		final var matrix = new Matrix2D(size, size);
-		//Matrix of them
-		//HG
-		return HungarianAlgorithm.hgAlgorithm(matrix.getAsArray(), "min").getLeft();
+		//final var size = Math.max(g1g2.size(), g2g1.size());
+		//final var matrix = new Matrix2D(size, size);
+		//TODO Fill matrix
+		//return HungarianAlgorithm.hgAlgorithm(matrix.getAsArray(), "min").getLeft();
+		return 0;
 	}
 	
-	private Collection<Edge> getEdgesAt(int i){
+	private List<Edge> getEdgesAt(int i){
 		final var node = this.getNodeAt(i).orElseThrow();
 		return this.getEdges().stream().filter(e -> Objects.equals(e.getFrom(), node.getID()) || Objects.equals(e.getTo(), node.getID())).collect(Collectors.toList());
 	}

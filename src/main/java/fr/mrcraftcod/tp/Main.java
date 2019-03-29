@@ -3,6 +3,7 @@ package fr.mrcraftcod.tp;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import fr.mrcraftcod.tp.model.Graph;
+import ij.IJ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -10,7 +11,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.Properties;
 
 public class Main{
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
@@ -38,7 +42,12 @@ public class Main{
 				if(!Objects.equals(g1, g2)){
 					final var bipartite = g1.getBipartiteCostMatrix(g2);
 					final var result = HungarianAlgorithm.hgAlgorithm(bipartite.getAsArray(), "min");
+					final var realScore = g1.addEdgeEditionCost(result, g2);
 					LOGGER.info("{}~{} vs {}~{} ==> Distance: {}", g1.getSourcePath().getFileName(), g1.getID(), g2.getSourcePath().getFileName(), g2.getID(), result.getLeft());
+					
+					IJ.openImage(Paths.get("houseimages").resolve(String.format("%s.png", g1.getInstanceName())).toAbsolutePath().toString());
+					
+					return;
 				}
 			}
 		}
