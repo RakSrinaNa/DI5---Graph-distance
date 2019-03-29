@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,8 +62,8 @@ public class Graph{
 			final var index11 = this.getNodeIndex(edge.getFrom()).orElseThrow();
 			final var index12 = this.getNodeIndex(edge.getTo()).orElseThrow();
 			
-			final var assign1 = result.getRight()[index11];
-			final var assign2 = result.getRight()[index12];
+			final var assign1 = Stream.of(result.getRight()).filter(m -> m[0] == index11).findAny().orElseThrow();
+			final var assign2 = Stream.of(result.getRight()).filter(m -> m[0] == index12).findAny().orElseThrow();
 			
 			if(assign1[1] < graph.getNodeCount() && assign2[1] < graph.getNodeCount()){
 				final var node21 = graph.getNodeAt(assign1[1]).orElseThrow();
@@ -105,8 +106,12 @@ public class Graph{
 		return IntStream.range(0, this.getEdgeCount()).mapToObj(i -> ImmutablePair.of(i, this.getEdgeAt(i))).filter(n -> n.getRight().isPresent()).filter(n -> Objects.equals(n.getRight().get().getFrom(), edge.getFrom()) && Objects.equals(n.getRight().get().getTo(), edge.getTo())).map(ImmutablePair::getLeft).findAny();
 	}
 	
-	private Optional<Integer> getNodeIndex(int id){
+	public Optional<Integer> getNodeIndex(int id){
 		return IntStream.range(0, this.getNodeCount()).mapToObj(i -> ImmutablePair.of(i, this.getNodeAt(i))).filter(n -> n.getRight().isPresent()).filter(n -> Objects.equals(n.getRight().get().getID(), id)).map(ImmutablePair::getLeft).findAny();
+	}
+	
+	public Path getImagePath(){
+		return Paths.get("houseimages").resolve(String.format("%s.png", this.getInstanceName()));
 	}
 	
 	public String getInstanceName(){
@@ -254,7 +259,7 @@ public class Graph{
 		return this.getEdges().stream().filter(e -> Objects.equals(e.getFrom(), node.getID()) || Objects.equals(e.getTo(), node.getID())).collect(Collectors.toList());
 	}
 	
-	private int getNodeCount(){
+	public int getNodeCount(){
 		return this.getNodes().size();
 	}
 	
