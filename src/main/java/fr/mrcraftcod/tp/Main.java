@@ -45,8 +45,10 @@ public class Main{
 		for(var g11 : graphs){
 			for(var g12 : graphs){
 				if(!Objects.equals(g11, g12)){
-					final var I1 = processGraphs(g11, g12, "Normal");
-					final var I2 = processGraphs(GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g11.getSourcePath().getFileName().toString())).getGraphs().iterator().next(), GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g12.getSourcePath().getFileName().toString())).getGraphs().iterator().next(), "Randomized");
+					final var I1 = processGraphs(g11, g12, "Normal " + g11.getSourcePath().getFileName() + " - " + g12.getSourcePath().getFileName());
+					final var g21 = GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g11.getSourcePath().getFileName().toString())).getGraphs().iterator().next();
+					final var g22 = GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g12.getSourcePath().getFileName().toString())).getGraphs().iterator().next();
+					final var I2 = processGraphs(g21, g22, "Randomized " + g21.getSourcePath().getFileName() + " - " + g22.getSourcePath().getFileName());
 					sc.nextLine();
 					I1.close();
 					I2.close();
@@ -92,7 +94,7 @@ public class Main{
 			I2.getProcessor().drawLine(node1.getAttr("x").map(i -> (Double) i).map(Double::intValue).get(), node1.getAttr("y").map(i -> (Double) i).map(Double::intValue).get(), node2.getAttr("x").map(i -> (Double) i).map(Double::intValue).get(), node2.getAttr("y").map(i -> (Double) i).map(Double::intValue).get());
 		}
 		
-		final var I3 = ConcatenateImage(I1, I2, GAP_SIZE);
+		final var I3 = ConcatenateImage(I1, I2, GAP_SIZE, title);
 		final var xOffset = I1.getWidth() + GAP_SIZE;
 		
 		for(final var node : g1.getNodes()){
@@ -114,7 +116,7 @@ public class Main{
 		return I3;
 	}
 	
-	private static ImagePlus ConcatenateImage(ImagePlus i1, ImagePlus i2, int gap){
+	private static ImagePlus ConcatenateImage(ImagePlus i1, ImagePlus i2, int gap, String title){
 		var newWidth = gap + WIDTH_MAX * 2;
 		final var res = NewImage.createRGBImage("new image", newWidth, HEIGHT_MAX, 1, NewImage.FILL_BLACK);
 		final var ip = res.getProcessor();
@@ -130,7 +132,7 @@ public class Main{
 				ip.set(x + i1.getWidth() + gap, y, p);
 			}
 		}
-		res.setProcessor("house", ip);
+		res.setProcessor(title, ip);
 		//res.show();
 		return res;
 	}
