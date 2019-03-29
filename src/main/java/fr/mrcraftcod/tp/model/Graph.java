@@ -21,6 +21,8 @@ import static fr.mrcraftcod.tp.model.EdgeMode.UNDIRECTED;
  * @since 2019-03-22
  */
 public class Graph{
+	private static final Double SCORE_EDGE_MAPPED = 0D;
+	private static final Double SCORE_EDGE_DELETED = 0D;
 	private final int ID;
 	private final ArrayList<Node> nodes;
 	private final ArrayList<Edge> edges;
@@ -54,11 +56,22 @@ public class Graph{
 	public double addEdgeEditionCost(Pair<Double, int[][]> result, Graph graph){
 		var realScore = result.getLeft();
 		for(final var edge : this.getEdges()){
-			var index1 = this.getNodeIndex(edge.getFrom()).orElseThrow();
-			var index2 = this.getNodeIndex(edge.getTo()).orElseThrow();
+			var index11 = this.getNodeIndex(edge.getFrom()).orElseThrow();
+			var index12 = this.getNodeIndex(edge.getTo()).orElseThrow();
 			
-			if(result.getRight()[index1][index2] == 1){
+			var assign1 = result.getRight()[index11];
+			var assign2 = result.getRight()[index12];
 			
+			if(assign1[1] < graph.getNodeCount() && assign2[1] < graph.getNodeCount()){
+				var node21 = graph.getNodeAt(assign1[1]).orElseThrow();
+				var node22 = graph.getNodeAt(assign2[1]).orElseThrow();
+				
+				if(graph.getEdge(node21, node22).isPresent()){
+					realScore += SCORE_EDGE_MAPPED;
+				}
+				else{
+					realScore += SCORE_EDGE_DELETED;
+				}
 			}
 		}
 		return realScore;
@@ -89,8 +102,8 @@ public class Graph{
 		return this.nodes;
 	}
 	
-	public Optional<Edge> getEdge(int from, int to){
-		return this.getEdges().stream().filter(e -> (Objects.equals(e.getFrom(), from) || Objects.equals(e.getTo(), to)) || (Objects.equals(this.getEdgeMode(), UNDIRECTED) && (Objects.equals(e.getFrom(), to) || Objects.equals(e.getTo(), from)))).findAny();
+	public Optional<Edge> getEdge(Node from, Node to){
+		return this.getEdges().stream().filter(e -> (Objects.equals(e.getFrom(), from.getID()) || Objects.equals(e.getTo(), to.getID())) || (Objects.equals(this.getEdgeMode(), UNDIRECTED) && (Objects.equals(e.getFrom(), to.getID()) || Objects.equals(e.getTo(), from.getID())))).findAny();
 	}
 	
 	public ArrayList<Edge> getEdges(){
