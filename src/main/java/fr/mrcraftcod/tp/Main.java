@@ -42,7 +42,7 @@ public class Main{
 				if(!Objects.equals(g1, g2)){
 					final var bipartite = g1.getBipartiteCostMatrix(g2);
 					final var result = HungarianAlgorithm.hgAlgorithm(bipartite.getAsArray(), "min");
-					final var realScore = g1.addEdgeEditionCost(result, g2);
+					final var realScore = g1.addEdgeEditionCost(result, g2, g1.getEdgeCostMatrix(g2));
 					LOGGER.info("{}~{} vs {}~{} ==> Distance: {}", g1.getSourcePath().getFileName(), g1.getID(), g2.getSourcePath().getFileName(), g2.getID(), result.getLeft());
 					
 					IJ.openImage(Paths.get("houseimages").resolve(String.format("%s.png", g1.getInstanceName())).toAbsolutePath().toString());

@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import static fr.mrcraftcod.tp.model.EdgeMode.UNDIRECTED;
 
 /**
@@ -54,7 +55,7 @@ public class Graph{
 		return this.getNodes().stream().filter(n -> Objects.equals(n.getID(), id)).findAny();
 	}
 	
-	public double addEdgeEditionCost(Pair<Double, int[][]> result, Graph graph){
+	public double addEdgeEditionCost(Pair<Double, int[][]> result, Graph graph, Matrix2D edgeCosts){
 		var realScore = result.getLeft();
 		for(final var edge : this.getEdges()){
 			var index11 = this.getNodeIndex(edge.getFrom()).orElseThrow();
@@ -67,11 +68,12 @@ public class Graph{
 				var node21 = graph.getNodeAt(assign1[1]).orElseThrow();
 				var node22 = graph.getNodeAt(assign2[1]).orElseThrow();
 				
-				if(graph.getEdge(node21, node22).isPresent()){
-					realScore += SCORE_EDGE_MAPPED;
+				final var otherEdge = graph.getEdge(node21, node22);
+				if(otherEdge.isPresent()){
+					realScore += edgeCosts.get(this.getEdgeIndex(edge).orElseThrow(), graph.getEdgeIndex(otherEdge.get()).orElseThrow());
 				}
 				else{
-					realScore += SCORE_EDGE_DELETED;
+					realScore += edgeCosts.get(this.getEdgeIndex(edge).orElseThrow(), graph.getNodeCount());
 				}
 			}
 		}
@@ -79,20 +81,26 @@ public class Graph{
 			var index21 = graph.getNodeIndex(edge.getFrom()).orElseThrow();
 			var index22 = graph.getNodeIndex(edge.getTo()).orElseThrow();
 			
-			//TODO
-			var assign1 = result.getRight()[index21];
-			var assign2 = result.getRight()[index22];
+			var assign1 = Stream.of(result.getRight()).filter(a -> a[1] == index21).findAny();
+			var assign2 = Stream.of(result.getRight()).filter(a -> a[1] == index22).findAny();
 			
-			if(assign1[1] < this.getNodeCount() && assign2[1] < this.getNodeCount()){
-				var node11 = this.getNodeAt(assign1[1]).orElseThrow();
-				var node12 = this.getNodeAt(assign2[1]).orElseThrow();
+			if(assign1.isPresent() && assign2.isPresent() && assign1.get()[1] < this.getNodeCount() && assign2.get()[1] < this.getNodeCount()){
+				var node11 = this.getNodeAt(assign1.get()[1]).orElseThrow();
+				var node12 = this.getNodeAt(assign2.get()[1]).orElseThrow();
 				
 				if(graph.getEdge(node11, node12).isEmpty()){
 					realScore += SCORE_EDGE_CREATED;
 				}
 			}
+			else{
+				realScore += SCORE_EDGE_CREATED;
+			}
 		}
 		return realScore;
+	}
+	
+	private Optional<Integer> getEdgeIndex(Edge edge){
+		return IntStream.range(0, this.getEdgeCount()).mapToObj(i -> ImmutablePair.of(i, this.getEdgeAt(i))).filter(n -> n.getRight().isPresent()).filter(n -> Objects.equals(n.getRight().get().getFrom(), edge.getFrom()) && Objects.equals(n.getRight().get().getTo(), edge.getTo())).map(ImmutablePair::getLeft).findAny();
 	}
 	
 	private Optional<Integer> getNodeIndex(int id){
