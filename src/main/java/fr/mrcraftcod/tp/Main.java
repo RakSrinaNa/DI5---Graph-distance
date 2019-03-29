@@ -14,10 +14,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Main{
@@ -44,23 +41,30 @@ public class Main{
 		}
 		graphs.sort(Comparator.comparing(Graph::getSourcePath));
 		
-		for(var g1 : graphs){
-			for(var g2 : graphs){
-				if(!Objects.equals(g1, g2)){
-					final var bipartite = g1.getBipartiteCostMatrix(g2);
-					final var result = HungarianAlgorithm.hgAlgorithm(bipartite.getAsArray(), "min");
-					final var realScore = g1.addEdgeEditionCost(result, g2, g1.getEdgeCostMatrix(g2));
-					LOGGER.info("{}~{} vs {}~{} ==> Distance: {}", g1.getSourcePath().getFileName(), g1.getID(), g2.getSourcePath().getFileName(), g2.getID(), result.getLeft());
-					
-					drawGraphs(g1, g2, result.getRight());
-					
-					return;
+		final var sc = new Scanner(System.in);
+		for(var g11 : graphs){
+			for(var g12 : graphs){
+				if(!Objects.equals(g11, g12)){
+					final var I1 = processGraphs(g11, g12, "Normal");
+					final var I2 = processGraphs(GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g11.getSourcePath().getFileName().toString())).getGraphs().iterator().next(), GXLParser.fromFile(Paths.get("randomized_torename_GXL").resolve(g12.getSourcePath().getFileName().toString())).getGraphs().iterator().next(), "Randomized");
+					sc.nextLine();
+					I1.close();
+					I2.close();
 				}
 			}
 		}
 	}
 	
-	private static void drawGraphs(Graph g1, Graph g2, int[][] matching){
+	private static ImagePlus processGraphs(Graph g1, Graph g2, String title){
+		final var bipartite = g1.getBipartiteCostMatrix(g2);
+		final var result = HungarianAlgorithm.hgAlgorithm(bipartite.getAsArray(), "min");
+		final var realScore = g1.addEdgeEditionCost(result, g2, g1.getEdgeCostMatrix(g2));
+		LOGGER.info("{}~{} vs {}~{} ==> Distance: {}", g1.getSourcePath().getFileName(), g1.getID(), g2.getSourcePath().getFileName(), g2.getID(), result.getLeft());
+		
+		return drawGraphs(g1, g2, result.getRight(), title);
+	}
+	
+	private static ImagePlus drawGraphs(Graph g1, Graph g2, int[][] matching, String title){
 		final var I1 = new ImagePlus(g1.getImagePath().toAbsolutePath().toString());
 		final var I2 = new ImagePlus(g2.getImagePath().toAbsolutePath().toString());
 		new ImageConverter(I1).convertToRGB();
@@ -97,21 +101,17 @@ public class Main{
 			
 			if(assign[1] < g2.getNodeCount()){
 				final var node2 = g2.getNodeAt(assign[1]).orElseThrow();
+				final var correctlyMatched = Objects.equals(node.getID(), node2.getID());
 				
-				I3.setColor(Color.LIGHT_GRAY);
+				I3.setColor(correctlyMatched ? Color.LIGHT_GRAY : Color.RED);
+				I3.getProcessor().setLineWidth(correctlyMatched ? 1 : 10);
+				
 				I3.getProcessor().drawLine(node.getAttr("x").map(i -> (Double) i).map(Double::intValue).get(), node.getAttr("y").map(i -> (Double) i).map(Double::intValue).get(), node2.getAttr("x").map(i -> (Double) i).map(Double::intValue).get() + xOffset, node2.getAttr("y").map(i -> (Double) i).map(Double::intValue).get());
 			}
 		}
 		
-		// correctly matched vertices
-		//I3.setColor(Color.LIGHT_GRAY);
-		//I3.getProcessor().drawLine(x1int, y1int, x2int + i1.getWidth() + gap, y2int);
-		// mismatched vertices
-		//I3.setColor(Color.red);
-		//I3.getProcessor().setLineWidth(10);
-		//I3.getProcessor().drawLine(x1int, y1int, x2int + i1.getWidth() + gap, y2int);
-		
 		I3.show();
+		return I3;
 	}
 	
 	private static ImagePlus ConcatenateImage(ImagePlus i1, ImagePlus i2, int gap){
