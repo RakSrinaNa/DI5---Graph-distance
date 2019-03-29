@@ -51,7 +51,8 @@ public class Graph{
 		return this.getNodes().stream().filter(n -> Objects.equals(n.getID(), id)).findAny();
 	}
 	
-	public void addEdgeEditionCost(Pair<Double, int[][]> result, Graph graph){
+	public double addEdgeEditionCost(Pair<Double, int[][]> result, Graph graph){
+		var realScore = result.getLeft();
 		for(final var edge : this.getEdges()){
 			var index1 = this.getNodeIndex(edge.getFrom()).orElseThrow();
 			var index2 = this.getNodeIndex(edge.getTo()).orElseThrow();
@@ -60,6 +61,7 @@ public class Graph{
 			
 			}
 		}
+		return realScore;
 	}
 	
 	private Optional<Integer> getNodeIndex(int id){
